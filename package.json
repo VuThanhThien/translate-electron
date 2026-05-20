@@ -1,0 +1,42 @@
+{
+  "name": "translate-input",
+  "version": "0.1.0",
+  "description": "macOS menu-bar app: global hotkey captures selection and translates via OpenAI",
+  "main": "./out/main/index.js",
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.74.4",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "dotenv": "^16.5.0",
+    "electron-store": "^10.0.1",
+    "franc": "^6.2.0",
+    "lucide-react": "^1.16.0",
+    "openai": "^4.96.0",
+    "radix-ui": "^1.4.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "tailwind-merge": "^3.6.0",
+    "tw-animate-css": "^1.4.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.4",
+    "@tanstack/react-query-devtools": "^5.74.4",
+    "@types/node": "^22.14.1",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "@vitejs/plugin-react": "^4.4.1",
+    "electron": "^35.1.5",
+    "electron-vite": "^3.1.0",
+    "tailwindcss": "^4.1.4",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.2"
+  }
+}
