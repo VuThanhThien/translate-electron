@@ -72,8 +72,8 @@ export function SettingsApp() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-8">
-      <Card className="mx-auto max-w-lg">
+    <div className="min-h-screen bg-background p-10">
+      <Card className="mx-auto w-full max-w-2xl">
         <CardHeader>
           <CardTitle>Translate Input</CardTitle>
           <CardDescription>Configure hotkey, languages, and OpenAI model.</CardDescription>
@@ -127,8 +127,7 @@ export function SettingsApp() {
 
           <p className="text-xs text-muted-foreground">
             API key: set <span className="text-primary">OPENAI_API_KEY</span> in{' '}
-            <code className="rounded bg-muted px-1 py-0.5 text-xs">.env</code> (not stored in the app).
-            Optional <code className="rounded bg-muted px-1 py-0.5 text-xs">MOCK_TRANSLATE=1</code> for UI testing.
+            <code className="rounded bg-muted px-1 py-0.5 text-xs">.env</code> before building the app (not stored in Settings).
           </p>
 
           <p className="text-xs text-muted-foreground">

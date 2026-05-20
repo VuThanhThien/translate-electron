@@ -6,7 +6,7 @@ import { SettingsApp } from './App'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <QueryProvider showDevtools>
+    <QueryProvider>
       <SettingsApp />
     </QueryProvider>
   </StrictMode>

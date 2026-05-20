@@ -25,14 +25,9 @@ function mapOpenAIError(err: unknown): TranslateResponse {
 }
 
 export async function translateText(req: TranslateRequest): Promise<TranslateResponse> {
-  if (process.env.MOCK_TRANSLATE === '1') {
-    const preview = req.text.slice(0, 80)
-    return { translation: `[mock] ${preview}${req.text.length > 80 ? '…' : ''}` }
-  }
-
   const apiKey = process.env.OPENAI_API_KEY?.trim()
   if (!apiKey) {
-    return { error: 'Missing OPENAI_API_KEY. Add it to .env and restart the app.', code: 'missing_key' }
+    return { error: 'Missing OPENAI_API_KEY. Add it to .env and rebuild the app.', code: 'missing_key' }
   }
 
   const text = req.text.trim()
@@ -79,8 +74,7 @@ export async function translateText(req: TranslateRequest): Promise<TranslateRes
 }
 
 export function warnIfMissingApiKey(): void {
-  if (process.env.MOCK_TRANSLATE === '1') return
   if (!process.env.OPENAI_API_KEY?.trim()) {
-    console.warn('[openai] OPENAI_API_KEY is not set. Translation will fail until .env is configured.')
+    console.warn('[openai] OPENAI_API_KEY is not set. Add it to .env (dev) or rebuild with a valid .env.')
   }
 }

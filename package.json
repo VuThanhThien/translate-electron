@@ -9,7 +9,47 @@
     "dev": "electron-vite dev",
     "build": "electron-vite build",
     "preview": "electron-vite preview",
+    "pack": "npm run build && electron-builder --dir",
+    "dist": "npm run build && electron-builder",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "prepack": "node scripts/ensure-build-env.mjs",
+    "predist": "node scripts/ensure-build-env.mjs",
+    "predist:mac": "node scripts/ensure-build-env.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json"
+  },
+  "build": {
+    "appId": "com.translate-input.app",
+    "productName": "Translate Input",
+    "directories": {
+      "output": "dist",
+      "buildResources": "resources"
+    },
+    "files": [
+      "out/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "icon": "logo.png",
+    "extraResources": [
+      { "from": ".env", "to": ".env" },
+      { "from": "logo.png", "to": "logo.png" }
+    ],
+    "mac": {
+      "icon": "logo.png",
+      "category": "public.app-category.productivity",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "entitlements": "resources/entitlements.mac.plist",
+      "entitlementsInherit": "resources/entitlements.mac.plist",
+      "extendInfo": {
+        "LSUIElement": true
+      }
+    },
+    "dmg": {
+      "title": "Translate Input"
+    }
   },
   "dependencies": {
     "@tanstack/react-query": "^5.74.4",
@@ -34,6 +74,7 @@
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.1",
     "electron": "^35.1.5",
+    "electron-builder": "^25.1.8",
     "electron-vite": "^3.1.0",
     "tailwindcss": "^4.1.4",
     "typescript": "^5.8.3",

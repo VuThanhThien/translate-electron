@@ -1,7 +1,5 @@
-import { config } from 'dotenv'
-import { existsSync } from 'fs'
 import { app, ipcMain } from 'electron'
-import { join } from 'path'
+import { loadEnv } from './env'
 import { captureSelectionText } from './capture'
 import { getCursorAnchor, resolveSelectionAnchor } from './selection-anchor'
 import { registerHotkey, unregisterHotkey, isHotkeyConflict } from './hotkey'
@@ -12,11 +10,7 @@ import { createTray, destroyTray } from './tray'
 import { closeModalWindow, openModal } from './windows'
 import type { ModalOpenPayload, Prefs, TranslateRequest } from '../shared/types'
 
-const envPath = join(process.cwd(), '.env')
-if (existsSync(envPath)) {
-  config({ path: envPath })
-}
-
+loadEnv()
 warnIfMissingApiKey()
 
 async function handleHotkey(): Promise<void> {

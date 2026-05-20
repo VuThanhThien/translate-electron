@@ -6,6 +6,8 @@ import type { ModalOpenPayload, ModalTailPlacement, ScreenPoint } from '../share
 const MODAL_WIDTH = 480
 const MODAL_HEIGHT = 560
 const MODAL_MIN_HEIGHT = 480
+const SETTINGS_WIDTH = 680
+const SETTINGS_HEIGHT = 720
 const POPOVER_GAP = 12
 const ARROW_SIZE = 11
 const EDGE_MARGIN = 10
@@ -93,8 +95,10 @@ export function createSettingsWindow(): BrowserWindow {
   }
 
   settingsWindow = new BrowserWindow({
-    width: 520,
-    height: 560,
+    width: SETTINGS_WIDTH,
+    height: SETTINGS_HEIGHT,
+    minWidth: 560,
+    minHeight: 520,
     show: false,
     title: 'Translate Input — Settings',
     backgroundColor: '#ffffff',
@@ -121,6 +125,7 @@ export function createSettingsWindow(): BrowserWindow {
 
 export function showSettingsWindow(): void {
   const win = createSettingsWindow()
+  win.setSize(SETTINGS_WIDTH, SETTINGS_HEIGHT)
   if (win.isMinimized()) win.restore()
   win.show()
   win.focus()

@@ -34,9 +34,8 @@ npm run dev
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `OPENAI_API_KEY` | Yes* | OpenAI API key (*not required if `MOCK_TRANSLATE=1`) |
+| `OPENAI_API_KEY` | Yes | OpenAI API key |
 | `OPENAI_MODEL` | No | Default model override (`gpt-4o-mini` in prefs) |
-| `MOCK_TRANSLATE=1` | No | Return mock translations without API calls |
 
 ## Usage
 
@@ -60,18 +59,63 @@ Grant in **System Settings → Privacy & Security**.
 ```bash
 npm run dev      # electron-vite dev
 npm run build    # production build to out/
+npm run preview  # run the built app from out/
 npm run typecheck
 ```
 
 Tray menu: **Open Settings**, **Quit**. Dock icon is hidden while running as a background utility.
+
+## Installable macOS app
+
+Configure `.env` in the project root first — it is **bundled into the app at build time** (no per-user `.env` file).
+
+```bash
+cp .env.example .env
+# Set OPENAI_API_KEY
+
+npm install
+npm run dist:mac
+```
+
+Artifacts land in `dist/`:
+
+| Output | Use |
+|--------|-----|
+| `dist/mac-arm64/Translate Input.app` | Run or copy to Applications |
+| `dist/Translate Input-0.1.0-arm64.dmg` | Installer disk image |
+| `dist/Translate Input-0.1.0-arm64-mac.zip` | Zip archive |
+
+App icon and menu-bar tray use `logo.png`. To change API keys or model defaults, edit `.env` and run `npm run dist:mac` again.
+
+Quick local test without DMG:
+
+```bash
+npm run pack
+open "dist/mac-arm64/Translate Input.app"
+```
+
+### Start at login
+
+1. Open **System Settings → General → Login Items** (or **Users & Groups → Login Items** on older macOS).
+2. Click **+** and choose **Translate Input** from Applications (or the `.app` in `dist/mac-arm64/`).
+
+First launch: macOS may block the app because it is **unsigned**. Open **Privacy & Security** and choose **Open Anyway**, or right-click the app → **Open**.
+
+### Build commands
+
+| Script | Description |
+|--------|-------------|
+| `npm run pack` | Build `.app` in `dist/mac-*` (no DMG) |
+| `npm run dist` | Full package for current platform |
+| `npm run dist:mac` | macOS DMG + zip + `.app` |
 
 ## Limitations (v1)
 
 - Hotkey required (no selection bubble)
 - Cloud translation only (OpenAI)
 - Clipboard is **not** restored after capture
-- No App Store / notarization / auto-update
-- Dev-focused; not hardened for production distribution
+- Unsigned build (Gatekeeper warning on first open); no App Store / notarization / auto-update
+- API key is embedded from project `.env` at build time (rebuild to change; not in Settings UI)
 
 ## Manual QA matrix
 
