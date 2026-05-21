@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "macOS menu-bar app: global hotkey captures selection and translates via OpenAI",
   "main": "./out/main/index.js",
-  "author": "",
+  "author": "VuThanhThien",
   "license": "MIT",
   "scripts": {
     "dev": "electron-vite dev",
