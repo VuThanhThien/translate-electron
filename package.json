@@ -12,9 +12,8 @@
     "pack": "npm run build && electron-builder --dir",
     "dist": "npm run build && electron-builder",
     "dist:mac": "npm run build && electron-builder --mac",
-    "prepack": "node scripts/ensure-build-env.mjs",
-    "predist": "node scripts/ensure-build-env.mjs",
-    "predist:mac": "node scripts/ensure-build-env.mjs",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:linux": "npm run build && electron-builder --linux",
     "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json"
   },
   "build": {
@@ -48,6 +47,19 @@
     },
     "dmg": {
       "title": "Translate Input"
+    },
+    "win": {
+      "icon": "logo.png",
+      "target": ["nsis", "portable"]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "linux": {
+      "icon": "logo.png",
+      "category": "Utility",
+      "target": ["AppImage", "deb"]
     }
   },
   "dependencies": {

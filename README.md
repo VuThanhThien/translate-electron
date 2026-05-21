@@ -99,9 +99,13 @@ First launch: macOS may block the app because it is **unsigned**. Open **Privacy
 
 | Script | Description |
 |--------|-------------|
-| `npm run pack` | Build `.app` in `dist/mac-*` (no DMG) |
-| `npm run dist` | Full package for current platform |
+| `npm run pack` | Unpacked app in `dist/` for the **current OS** (no installer) |
+| `npm run dist` | Installer/archive for the **current OS** |
 | `npm run dist:mac` | macOS DMG + zip + `.app` |
+| `npm run dist:win` | Windows NSIS installer + portable `.exe` (run on Windows, or cross-build with Wine) |
+| `npm run dist:linux` | Linux AppImage + `.deb` |
+
+**Platform support:** Packaging works on all three targets above. **Runtime features** (selection capture via simulated copy, menu-bar tray, accessibility anchoring) are implemented for **macOS only**. Windows/Linux builds are for contributors or future porting—not a supported end-user experience yet.
 
 ## Limitations (v1)
 
