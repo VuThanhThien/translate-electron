@@ -37,7 +37,8 @@ export default defineConfig({
       rollupOptions: {
         input: {
           modal: resolve(__dirname, 'src/renderer/modal/index.html'),
-          settings: resolve(__dirname, 'src/renderer/settings/index.html')
+          settings: resolve(__dirname, 'src/renderer/settings/index.html'),
+          setup: resolve(__dirname, 'src/renderer/setup/index.html')
         }
       }
     }

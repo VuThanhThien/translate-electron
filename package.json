@@ -31,7 +31,6 @@
     "asar": true,
     "icon": "logo.png",
     "extraResources": [
-      { "from": ".env", "to": ".env" },
       { "from": "logo.png", "to": "logo.png" }
     ],
     "mac": {

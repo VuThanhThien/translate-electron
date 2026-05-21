@@ -1,15 +1,19 @@
+import type { ProviderId } from './providers'
+
 export type Prefs = {
   sourceLang: string
   targetLang: string
   hotkey: string
-  openaiModel: string
+  provider: ProviderId
+  model: string
 }
 
 export const DEFAULT_PREFS: Prefs = {
   sourceLang: 'auto',
   targetLang: 'vi',
   hotkey: 'Command+Shift+T',
-  openaiModel: 'gpt-4o-mini'
+  provider: 'openai',
+  model: 'gpt-4o-mini'
 }
 
 export type TranslateRequest = {

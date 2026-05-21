@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import type { ElectronAPI } from '../shared/electron-api'
 import type { ModalOpenPayload, Prefs, TranslateRequest } from '../shared/types'
+import type { ProviderId, SecretsSetRequest } from '../shared/providers'
 
 const api: ElectronAPI = {
   prefs: {
@@ -13,6 +14,14 @@ const api: ElectronAPI = {
       return () => ipcRenderer.removeListener('prefs:changed', listener)
     }
   },
+  secrets: {
+    hasKey: (opts) => ipcRenderer.invoke('secrets:hasKey', opts),
+    set: (req: SecretsSetRequest) => ipcRenderer.invoke('secrets:set', req),
+    clear: (opts) => ipcRenderer.invoke('secrets:clear', opts)
+  },
+  provider: {
+    listModels: (opts) => ipcRenderer.invoke('provider:listModels', opts)
+  },
   translate: (payload) => ipcRenderer.invoke('translate:request', payload),
   modal: {
     onOpen: (callback) => {
@@ -22,6 +31,9 @@ const api: ElectronAPI = {
       return () => ipcRenderer.removeListener('modal:open', listener)
     },
     close: () => ipcRenderer.send('modal:close')
+  },
+  setup: {
+    complete: () => ipcRenderer.send('setup:complete')
   }
 }
 

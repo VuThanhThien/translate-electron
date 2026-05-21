@@ -8,6 +8,8 @@ const MODAL_HEIGHT = 560
 const MODAL_MIN_HEIGHT = 480
 const SETTINGS_WIDTH = 680
 const SETTINGS_HEIGHT = 720
+const SETUP_WIDTH = 680
+const SETUP_HEIGHT = 640
 const POPOVER_GAP = 12
 const ARROW_SIZE = 11
 const EDGE_MARGIN = 10
@@ -15,12 +17,13 @@ const TAIL_EDGE_PADDING = 56
 
 let modalWindow: BrowserWindow | null = null
 let settingsWindow: BrowserWindow | null = null
+let setupWindow: BrowserWindow | null = null
 
 function isDev(): boolean {
   return !app.isPackaged
 }
 
-function rendererUrl(page: 'modal' | 'settings'): string {
+function rendererUrl(page: 'modal' | 'settings' | 'setup'): string {
   if (isDev() && process.env['ELECTRON_RENDERER_URL']) {
     return `${process.env['ELECTRON_RENDERER_URL']}/${page}/index.html`
   }
@@ -201,4 +204,52 @@ export function openModal(payload: ModalOpenPayload): void {
 
 export function getSettingsWindow(): BrowserWindow | null {
   return settingsWindow
+}
+
+export function createSetupWindow(): BrowserWindow {
+  if (setupWindow && !setupWindow.isDestroyed()) {
+    return setupWindow
+  }
+
+  setupWindow = new BrowserWindow({
+    width: SETUP_WIDTH,
+    height: SETUP_HEIGHT,
+    minWidth: 560,
+    minHeight: 480,
+    show: false,
+    title: 'Translate Input — Setup',
+    backgroundColor: '#ffffff',
+    webPreferences: {
+      preload: preloadPath(),
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: false
+    }
+  })
+
+  setupWindow.on('closed', () => {
+    setupWindow = null
+  })
+
+  if (isDev()) {
+    void setupWindow.loadURL(rendererUrl('setup'))
+  } else {
+    void setupWindow.loadFile(rendererUrl('setup'))
+  }
+
+  return setupWindow
+}
+
+export function showSetupWindow(): void {
+  const win = createSetupWindow()
+  win.setSize(SETUP_WIDTH, SETUP_HEIGHT)
+  if (win.isMinimized()) win.restore()
+  win.show()
+  win.focus()
+}
+
+export function closeSetupWindow(): void {
+  if (setupWindow && !setupWindow.isDestroyed()) {
+    setupWindow.close()
+  }
 }

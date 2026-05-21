@@ -1,7 +1,8 @@
 import { existsSync } from 'fs'
 import { join } from 'path'
 import { Menu, Tray, nativeImage, app } from 'electron'
-import { showSettingsWindow } from './windows'
+import { isConfigured } from './config'
+import { showSettingsWindow, showSetupWindow } from './windows'
 
 let tray: Tray | null = null
 
@@ -30,15 +31,12 @@ function createTrayIcon(): Electron.NativeImage {
   return nativeImage.createFromBuffer(canvas, { width: size, height: size })
 }
 
-export function createTray(): Tray {
-  const icon = createTrayIcon()
-  tray = new Tray(icon)
-  tray.setToolTip('Translate Input')
-
-  const menu = Menu.buildFromTemplate([
+function buildTrayMenu(): Electron.Menu {
+  const configured = isConfigured()
+  return Menu.buildFromTemplate([
     {
-      label: 'Open Settings',
-      click: () => showSettingsWindow()
+      label: configured ? 'Open Settings' : 'Configure API Key…',
+      click: () => (configured ? showSettingsWindow() : showSetupWindow())
     },
     { type: 'separator' },
     {
@@ -46,9 +44,20 @@ export function createTray(): Tray {
       click: () => app.quit()
     }
   ])
+}
 
-  tray.setContextMenu(menu)
+export function createTray(): Tray {
+  const icon = createTrayIcon()
+  tray = new Tray(icon)
+  tray.setToolTip('Translate Input')
+  tray.setContextMenu(buildTrayMenu())
   return tray
+}
+
+export function refreshTrayMenu(): void {
+  if (tray) {
+    tray.setContextMenu(buildTrayMenu())
+  }
 }
 
 export function destroyTray(): void {

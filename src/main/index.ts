@@ -1,19 +1,28 @@
 import { app, ipcMain } from 'electron'
-import { loadEnv } from './env'
 import { captureSelectionText } from './capture'
 import { getCursorAnchor, resolveSelectionAnchor } from './selection-anchor'
 import { registerHotkey, unregisterHotkey, isHotkeyConflict } from './hotkey'
 import { detectSourceLanguage } from '../shared/detect-language'
-import { translateText, warnIfMissingApiKey } from './openai'
+import { translateRequest } from './translate'
 import { getPrefs, setPrefs } from './prefs'
-import { createTray, destroyTray } from './tray'
-import { closeModalWindow, openModal } from './windows'
+import { createTray, destroyTray, refreshTrayMenu } from './tray'
+import { closeModalWindow, closeSetupWindow, openModal, showSetupWindow } from './windows'
+import { isConfigured } from './config'
+import {
+  handleListModels,
+  handleSecretsClear,
+  handleSecretsHasKey,
+  handleSecretsSet
+} from './ipc-secrets'
 import type { ModalOpenPayload, Prefs, TranslateRequest } from '../shared/types'
-
-loadEnv()
-warnIfMissingApiKey()
+import type { ProviderId, SecretsSetRequest } from '../shared/providers'
 
 async function handleHotkey(): Promise<void> {
+  if (!isConfigured()) {
+    showSetupWindow()
+    return
+  }
+
   const cursorAnchor = getCursorAnchor()
   let payload: ModalOpenPayload
 
@@ -68,9 +77,28 @@ function setupIpc(): void {
     return { ok: true }
   })
 
-  ipcMain.handle('translate:request', (_event, req: TranslateRequest) => translateText(req))
+  ipcMain.handle('secrets:hasKey', (_event, opts?: { provider?: ProviderId }) =>
+    handleSecretsHasKey(opts?.provider)
+  )
+
+  ipcMain.handle('secrets:set', (_event, req: SecretsSetRequest) => handleSecretsSet(req))
+
+  ipcMain.handle('secrets:clear', (_event, opts?: { provider?: ProviderId }) =>
+    handleSecretsClear(opts?.provider)
+  )
+
+  ipcMain.handle('provider:listModels', (_event, opts?: { provider?: ProviderId }) =>
+    handleListModels(opts?.provider)
+  )
+
+  ipcMain.handle('translate:request', (_event, req: TranslateRequest) => translateRequest(req))
 
   ipcMain.on('modal:close', () => closeModalWindow())
+
+  ipcMain.on('setup:complete', () => {
+    closeSetupWindow()
+    refreshTrayMenu()
+  })
 }
 
 app.whenReady().then(async () => {
@@ -79,6 +107,10 @@ app.whenReady().then(async () => {
 
   if (process.platform === 'darwin' && app.dock) {
     app.dock.hide()
+  }
+
+  if (!isConfigured()) {
+    showSetupWindow()
   }
 
   const result = registerHotkey(handleHotkey)

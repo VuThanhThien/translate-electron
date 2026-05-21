@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { DEFAULT_PREFS, type Prefs } from '@shared/types'
+import type { ProviderId } from '@shared/providers'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { LanguageField } from '../shared/LanguageField'
+import { ProviderConnectionCard } from '../shared/ProviderConnectionCard'
 import {
   usePrefsChangedListener,
   usePrefsQuery,
@@ -20,7 +22,8 @@ export function SettingsApp() {
   const savePrefs = useSavePrefsMutation()
 
   const [hotkey, setHotkey] = useState(DEFAULT_PREFS.hotkey)
-  const [openaiModel, setOpenaiModel] = useState(DEFAULT_PREFS.openaiModel)
+  const [provider, setProvider] = useState<ProviderId>(DEFAULT_PREFS.provider)
+  const [model, setModel] = useState(DEFAULT_PREFS.model)
   const [sourceLang, setSourceLang] = useState(DEFAULT_PREFS.sourceLang)
   const [targetLang, setTargetLang] = useState(DEFAULT_PREFS.targetLang)
   const [hotkeyError, setHotkeyError] = useState<string | null>(null)
@@ -29,7 +32,8 @@ export function SettingsApp() {
   useEffect(() => {
     if (prefs) {
       setHotkey(prefs.hotkey)
-      setOpenaiModel(prefs.openaiModel)
+      setProvider(prefs.provider)
+      setModel(prefs.model)
       setSourceLang(prefs.sourceLang)
       setTargetLang(prefs.targetLang)
     }
@@ -46,7 +50,7 @@ export function SettingsApp() {
     }
 
     savePrefs.mutate(
-      { hotkey, openaiModel, sourceLang, targetLang },
+      { hotkey, provider, model, sourceLang, targetLang },
       {
         onSuccess: (result: SavePrefsResult) => {
           if (result.hotkeyError) {
@@ -76,7 +80,7 @@ export function SettingsApp() {
       <Card className="mx-auto w-full max-w-2xl">
         <CardHeader>
           <CardTitle>Translate Input</CardTitle>
-          <CardDescription>Configure hotkey, languages, and OpenAI model.</CardDescription>
+          <CardDescription>Configure hotkey, languages, and AI provider.</CardDescription>
         </CardHeader>
 
         <CardContent className="flex flex-col gap-6">
@@ -91,6 +95,14 @@ export function SettingsApp() {
             </p>
           ) : null}
 
+          <ProviderConnectionCard
+            mode="settings"
+            provider={provider}
+            onProviderChange={setProvider}
+            model={model}
+            onModelChange={setModel}
+          />
+
           <div className="space-y-2">
             <Label htmlFor="hotkey">Global hotkey</Label>
             <Input
@@ -102,11 +114,6 @@ export function SettingsApp() {
             <p className="text-xs text-muted-foreground">
               Electron accelerator format, e.g. Command+Shift+T
             </p>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="openai-model">OpenAI model</Label>
-            <Input id="openai-model" value={openaiModel} onChange={(e) => setOpenaiModel(e.target.value)} />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -124,11 +131,6 @@ export function SettingsApp() {
               hideAuto
             />
           </div>
-
-          <p className="text-xs text-muted-foreground">
-            API key: set <span className="text-primary">OPENAI_API_KEY</span> in{' '}
-            <code className="rounded bg-muted px-1 py-0.5 text-xs">.env</code> before building the app (not stored in Settings).
-          </p>
 
           <p className="text-xs text-muted-foreground">
             macOS: grant <strong>Accessibility</strong> (for simulated copy) and{' '}

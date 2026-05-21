@@ -8,16 +8,30 @@ const Store =
     ? ElectronStore
     : (ElectronStore as { default: typeof ElectronStore }).default
 
-const store = new Store<Prefs>({
+type LegacyStore = Prefs & { openaiModel?: string }
+
+const store = new Store<LegacyStore>({
   defaults: DEFAULT_PREFS
 })
 
+function migrateLegacyPrefs(): void {
+  const legacy = store.get('openaiModel')
+  if (legacy && !store.get('model')) {
+    store.set('model', legacy)
+  }
+  if (!store.get('provider')) {
+    store.set('provider', 'openai')
+  }
+}
+
 export function getPrefs(): Prefs {
+  migrateLegacyPrefs()
   return {
     sourceLang: store.get('sourceLang'),
     targetLang: store.get('targetLang'),
     hotkey: store.get('hotkey'),
-    openaiModel: store.get('openaiModel')
+    provider: store.get('provider') ?? 'openai',
+    model: store.get('model') ?? 'gpt-4o-mini'
   }
 }
 
