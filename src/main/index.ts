@@ -4,6 +4,7 @@ import { getCursorAnchor, resolveSelectionAnchor } from './selection-anchor'
 import { registerHotkey, unregisterHotkey, isHotkeyConflict } from './hotkey'
 import { detectSourceLanguage } from '../shared/detect-language'
 import { translateRequest } from './translate'
+import { improveRequest } from './improve'
 import { getPrefs, setPrefs } from './prefs'
 import { createTray, destroyTray, refreshTrayMenu } from './tray'
 import { closeModalWindow, closeSetupWindow, openModal, showSetupWindow } from './windows'
@@ -14,7 +15,7 @@ import {
   handleSecretsHasKey,
   handleSecretsSet
 } from './ipc-secrets'
-import type { ModalOpenPayload, Prefs, TranslateRequest } from '../shared/types'
+import type { ImproveRequest, ModalOpenPayload, Prefs, TranslateRequest } from '../shared/types'
 import type { ProviderId, SecretsSetRequest } from '../shared/providers'
 
 async function handleHotkey(): Promise<void> {
@@ -92,6 +93,8 @@ function setupIpc(): void {
   )
 
   ipcMain.handle('translate:request', (_event, req: TranslateRequest) => translateRequest(req))
+
+  ipcMain.handle('improve:request', (_event, req: ImproveRequest) => improveRequest(req))
 
   ipcMain.on('modal:close', () => closeModalWindow())
 

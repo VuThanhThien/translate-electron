@@ -4,7 +4,14 @@ import type {
   SecretsSetRequest,
   SecretsSetResult
 } from './providers'
-import type { ModalOpenPayload, Prefs, TranslateRequest, TranslateResponse } from './types'
+import type {
+  ImproveRequest,
+  ImproveResponse,
+  ModalOpenPayload,
+  Prefs,
+  TranslateRequest,
+  TranslateResponse
+} from './types'
 
 export type ElectronAPI = {
   prefs: {
@@ -22,6 +29,7 @@ export type ElectronAPI = {
     listModels: (opts?: { provider?: ProviderId }) => Promise<ListModelsResult>
   }
   translate: (payload: TranslateRequest) => Promise<TranslateResponse>
+  improve: (payload: ImproveRequest) => Promise<ImproveResponse>
   modal: {
     onOpen: (callback: (payload: ModalOpenPayload) => void) => () => void
     close: () => void

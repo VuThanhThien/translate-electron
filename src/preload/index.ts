@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import type { ElectronAPI } from '../shared/electron-api'
-import type { ModalOpenPayload, Prefs, TranslateRequest } from '../shared/types'
+import type { ImproveRequest, ModalOpenPayload, Prefs, TranslateRequest } from '../shared/types'
 import type { ProviderId, SecretsSetRequest } from '../shared/providers'
 
 const api: ElectronAPI = {
@@ -23,6 +23,7 @@ const api: ElectronAPI = {
     listModels: (opts) => ipcRenderer.invoke('provider:listModels', opts)
   },
   translate: (payload) => ipcRenderer.invoke('translate:request', payload),
+  improve: (payload: ImproveRequest) => ipcRenderer.invoke('improve:request', payload),
   modal: {
     onOpen: (callback) => {
       const listener = (_event: Electron.IpcRendererEvent, payload: ModalOpenPayload): void =>

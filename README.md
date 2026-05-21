@@ -34,9 +34,11 @@ On first launch, the **Setup** window prompts for your OpenAI API key and model.
 
 1. Select text in any app (Safari, Slack, VS Code, Notes, …).
 2. Press the default hotkey **⌘⇧T** (`Command+Shift+T`).
-3. The modal shows captured text and auto-translates.
-4. Change languages and click **Retranslate** if needed.
-5. **Tray icon → Open Settings** to change hotkey, provider, model, or default languages.
+3. The modal opens on the **Translate** tab with captured text and auto-translation.
+4. Switch to **Help me write** for grammar fixes (same language) or translate-and-fix (different languages). Results are cached per tab until you close the modal.
+5. Use **Copy** on the output section to copy the active tab’s result.
+6. Change languages in the shared language bar; edits debounce like translate (550ms on the active tab).
+7. **Tray icon → Open Settings** to change hotkey, provider, model, or default languages.
 
 If no API key is configured, the hotkey opens **Setup** instead of the translate modal.
 
@@ -119,12 +121,12 @@ First launch: macOS may block the app because it is **unsigned**. Open **Privacy
 
 Record results when testing on your machine (`docs/qa-2026-05-20.md`).
 
-| App | Select | Hotkey | Translate | UI tokens OK |
-|-----|--------|--------|-----------|--------------|
-| Safari | ☐ | ☐ | ☐ | ☐ |
-| Slack / Discord | ☐ | ☐ | ☐ | ☐ |
-| VS Code / Cursor | ☐ | ☐ | ☐ | ☐ |
-| Notes | ☐ | ☐ | ☐ | ☐ |
+| App | Select | Hotkey | Translate | Help me write | Copy | UI tokens OK |
+|-----|--------|--------|-----------|---------------|------|--------------|
+| Safari | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Slack / Discord | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ |
+| VS Code / Cursor | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ |
+| Notes | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ |
 
 **BYOK QA:** See `plans/260521-byok-provider-setup/phase-06-docs-build-qa.md`.
 

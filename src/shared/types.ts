@@ -27,6 +27,17 @@ export type TranslateResponse =
   | { translation: string }
   | { error: string; code?: string }
 
+export type ImproveRequest = {
+  text: string
+  sourceLang: string
+  targetLang: string
+  model?: string
+}
+
+export type ImproveResponse =
+  | { improved: string }
+  | { error: string; code?: string }
+
 /** Which edge of the popover has the pointer (toward the selection anchor). */
 export type ModalTailPlacement = 'top' | 'bottom' | 'left' | 'right'
 

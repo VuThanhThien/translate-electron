@@ -37,3 +37,9 @@ export function resolveModalSourceLang(prefsSourceLang: string, detected?: strin
   if (detected && SUPPORTED_SOURCE_CODES.has(detected)) return detected
   return 'auto'
 }
+
+/** Human-readable label for prompts (falls back to code). */
+export function getLanguageLabel(code: string): string {
+  if (code === 'auto') return 'the detected source language'
+  return LANGUAGE_OPTIONS.find((o) => o.value === code)?.label ?? code
+}

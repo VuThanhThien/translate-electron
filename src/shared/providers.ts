@@ -1,4 +1,4 @@
-import type { TranslateRequest, TranslateResponse } from './types'
+import type { ImproveRequest, ImproveResponse, TranslateRequest, TranslateResponse } from './types'
 
 export const PROVIDERS = [
   { id: 'openai', label: 'OpenAI', enabled: true },
@@ -28,11 +28,17 @@ export type TranslateParams = TranslateRequest & {
   apiKey: string
 }
 
+export type ImproveParams = ImproveRequest & {
+  model: string
+  apiKey: string
+}
+
 export type TranslationProvider = {
   id: ProviderId
   validateApiKey(apiKey: string): Promise<void>
   listChatModels(apiKey: string): Promise<ModelOption[]>
   translate(params: TranslateParams): Promise<TranslateResponse>
+  improve(params: ImproveParams): Promise<ImproveResponse>
 }
 
 export type SecretsSetRequest = { provider: ProviderId; apiKey: string }
