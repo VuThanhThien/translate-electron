@@ -38,7 +38,7 @@ On first launch, the **Setup** window prompts for your OpenAI API key and model.
 4. Switch to **Help me write** for grammar fixes (same language) or translate-and-fix (different languages). Results are cached per tab until you close the modal.
 5. Use **Copy** on the output section to copy the active tab’s result.
 6. Change languages in the shared language bar; edits debounce like translate (550ms on the active tab).
-7. **Tray icon → Open Settings** to change hotkey, provider, model, or default languages.
+7. **Tray icon → Open Settings** to change hotkey, provider, model, default languages, and **Help me write** style (vibe, edit strength, optional custom instructions).
 
 If no API key is configured, the hotkey opens **Setup** instead of the translate modal.
 
@@ -58,6 +58,7 @@ npm run dev      # electron-vite dev
 npm run build    # production build to out/
 npm run preview  # run the built app from out/
 npm run typecheck
+npm run test       # unit tests (prompt builder)
 ```
 
 Tray menu: **Open Settings** (or **Configure API Key…** when unset), **Quit**. Dock icon is hidden while running as a background utility.

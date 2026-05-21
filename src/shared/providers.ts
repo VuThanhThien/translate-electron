@@ -1,3 +1,4 @@
+import type { ImproveStrengthId, ImproveVibeId } from './improve-config'
 import type { ImproveRequest, ImproveResponse, TranslateRequest, TranslateResponse } from './types'
 
 export const PROVIDERS = [
@@ -31,6 +32,9 @@ export type TranslateParams = TranslateRequest & {
 export type ImproveParams = ImproveRequest & {
   model: string
   apiKey: string
+  improveVibe: ImproveVibeId
+  improveStrength: ImproveStrengthId
+  improveCustomHint: string
 }
 
 export type TranslationProvider = {

@@ -19,5 +19,12 @@ export async function improveRequest(req: ImproveRequest): Promise<ImproveRespon
   }
 
   const model = req.model ?? prefs.model
-  return provider.improve({ ...req, model, apiKey })
+  return provider.improve({
+    ...req,
+    model,
+    apiKey,
+    improveVibe: prefs.improveVibe,
+    improveStrength: prefs.improveStrength,
+    improveCustomHint: prefs.improveCustomHint
+  })
 }

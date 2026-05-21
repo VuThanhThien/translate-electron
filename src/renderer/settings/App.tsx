@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react'
+import {
+  IMPROVE_CUSTOM_HINT_MAX,
+  isImproveCustomHintTooLong,
+  type ImproveStrengthId,
+  type ImproveVibeId
+} from '@shared/improve-config'
 import { DEFAULT_PREFS, type Prefs } from '@shared/types'
 import type { ProviderId } from '@shared/providers'
+import { ImproveSettingsSection } from '../shared/ImproveSettingsSection'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -26,7 +33,13 @@ export function SettingsApp() {
   const [model, setModel] = useState(DEFAULT_PREFS.model)
   const [sourceLang, setSourceLang] = useState(DEFAULT_PREFS.sourceLang)
   const [targetLang, setTargetLang] = useState(DEFAULT_PREFS.targetLang)
+  const [improveVibe, setImproveVibe] = useState<ImproveVibeId>(DEFAULT_PREFS.improveVibe)
+  const [improveStrength, setImproveStrength] = useState<ImproveStrengthId>(
+    DEFAULT_PREFS.improveStrength
+  )
+  const [improveCustomHint, setImproveCustomHint] = useState(DEFAULT_PREFS.improveCustomHint)
   const [hotkeyError, setHotkeyError] = useState<string | null>(null)
+  const [hintError, setHintError] = useState<string | null>(null)
   const [saveMessage, setSaveMessage] = useState<string | null>(null)
 
   useEffect(() => {
@@ -36,12 +49,23 @@ export function SettingsApp() {
       setModel(prefs.model)
       setSourceLang(prefs.sourceLang)
       setTargetLang(prefs.targetLang)
+      setImproveVibe(prefs.improveVibe)
+      setImproveStrength(prefs.improveStrength)
+      setImproveCustomHint(prefs.improveCustomHint)
     }
   }, [prefs])
 
   const handleSave = async () => {
     setHotkeyError(null)
+    setHintError(null)
     setSaveMessage(null)
+
+    if (isImproveCustomHintTooLong(improveCustomHint)) {
+      setHintError(
+        `Additional instructions must be ${IMPROVE_CUSTOM_HINT_MAX} characters or fewer.`
+      )
+      return
+    }
 
     const validation = await window.api.prefs.validateHotkey(hotkey)
     if (!validation.ok) {
@@ -50,7 +74,16 @@ export function SettingsApp() {
     }
 
     savePrefs.mutate(
-      { hotkey, provider, model, sourceLang, targetLang },
+      {
+        hotkey,
+        provider,
+        model,
+        sourceLang,
+        targetLang,
+        improveVibe,
+        improveStrength,
+        improveCustomHint: improveCustomHint.trim()
+      },
       {
         onSuccess: (result: SavePrefsResult) => {
           if (result.hotkeyError) {
@@ -80,7 +113,9 @@ export function SettingsApp() {
       <Card className="mx-auto w-full max-w-2xl">
         <CardHeader>
           <CardTitle>Translate Input</CardTitle>
-          <CardDescription>Configure hotkey, languages, and AI provider.</CardDescription>
+          <CardDescription>
+            Configure hotkey, languages, AI provider, and Help me write style.
+          </CardDescription>
         </CardHeader>
 
         <CardContent className="flex flex-col gap-6">
@@ -131,6 +166,19 @@ export function SettingsApp() {
               hideAuto
             />
           </div>
+
+          <ImproveSettingsSection
+            vibe={improveVibe}
+            onVibeChange={setImproveVibe}
+            strength={improveStrength}
+            onStrengthChange={setImproveStrength}
+            customHint={improveCustomHint}
+            onCustomHintChange={(value) => {
+              setImproveCustomHint(value)
+              if (hintError) setHintError(null)
+            }}
+            hintError={hintError}
+          />
 
           <p className="text-xs text-muted-foreground">
             macOS: grant <strong>Accessibility</strong> (for simulated copy) and{' '}

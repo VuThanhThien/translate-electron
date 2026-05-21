@@ -1,3 +1,4 @@
+import type { ImproveStrengthId, ImproveVibeId } from './improve-config'
 import type { ProviderId } from './providers'
 
 export type Prefs = {
@@ -6,6 +7,9 @@ export type Prefs = {
   hotkey: string
   provider: ProviderId
   model: string
+  improveVibe: ImproveVibeId
+  improveStrength: ImproveStrengthId
+  improveCustomHint: string
 }
 
 export const DEFAULT_PREFS: Prefs = {
@@ -13,7 +17,10 @@ export const DEFAULT_PREFS: Prefs = {
   targetLang: 'vi',
   hotkey: 'Command+Shift+T',
   provider: 'openai',
-  model: 'gpt-4o-mini'
+  model: 'gpt-4o-mini',
+  improveVibe: 'neutral',
+  improveStrength: 'balanced',
+  improveCustomHint: ''
 }
 
 export type TranslateRequest = {

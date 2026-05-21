@@ -1,17 +1,12 @@
 import OpenAI from 'openai'
-import { detectSourceLanguage, getLanguageLabel } from '../../shared/detect-language'
+import { detectSourceLanguage } from '../../shared/detect-language'
+import { buildImprovePrompt } from '../../shared/improve-prompt'
 import { MAX_TRANSLATE_CHARS, type ImproveResponse, type TranslateResponse } from '../../shared/types'
 import type { ImproveParams, ModelOption, TranslateParams, TranslationProvider } from '../../shared/providers'
 import { filterChatModelIds } from './model-filter'
 
 const SYSTEM_PROMPT =
   'You are a translation engine. Translate the user text accurately. Preserve meaning. Output only the translated text with no commentary, labels, or quotes.'
-
-const SYSTEM_IMPROVE_CROSS =
-  'You are a bilingual writing assistant. When source and target languages differ, translate the text into the target language while fixing grammar and clarity. When they match, proofread only. Always output ONLY the final text in the target language. Preserve meaning. No commentary, labels, or quotes.'
-
-const SYSTEM_IMPROVE_SAME =
-  'You are a proofreader. Fix grammar and spelling only. Do not rephrase for style or change meaning. Output only the corrected text with no commentary, labels, or quotes.'
 
 function mapOpenAIError(err: unknown): TranslateResponse {
   const message = err instanceof Error ? err.message : String(err)
@@ -152,15 +147,14 @@ export const openaiProvider: TranslationProvider = {
       sourceLang = detectSourceLanguage(text) ?? sourceLang
     }
 
-    const targetLang = params.targetLang
-    const sameLang =
-      sourceLang !== 'auto' && targetLang !== 'auto' && sourceLang === targetLang
-    const systemPrompt = sameLang ? SYSTEM_IMPROVE_SAME : SYSTEM_IMPROVE_CROSS
-    const sourceLabel = getLanguageLabel(sourceLang)
-    const targetLabel = getLanguageLabel(targetLang)
-    const userContent = sameLang
-      ? `Proofread in ${targetLabel}:\n\n${text}`
-      : `Rewrite in ${targetLabel} (from ${sourceLabel}). The output must be entirely in ${targetLabel}:\n\n${text}`
+    const { system, user } = buildImprovePrompt({
+      text,
+      sourceLang,
+      targetLang: params.targetLang,
+      vibe: params.improveVibe,
+      strength: params.improveStrength,
+      customHint: params.improveCustomHint
+    })
 
     const client = new OpenAI({ apiKey: params.apiKey })
 
@@ -169,8 +163,8 @@ export const openaiProvider: TranslationProvider = {
         model: params.model,
         temperature: 0.2,
         messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userContent }
+          { role: 'system', content: system },
+          { role: 'user', content: user }
         ]
       })
 
